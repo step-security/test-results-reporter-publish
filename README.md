@@ -2,20 +2,14 @@
 
 <span align="center">
 
-![logo](https://github.com/test-results-reporter/testbeats/raw/main/assets/logo.png)
-
 # TestBeats Publish GitHub Action
 
 ![CI](https://github.com/step-security/test-results-reporter-publish/actions/workflows/ci.yml/badge.svg)
 [![Check dist/](https://github.com/step-security/test-results-reporter-publish/actions/workflows/check-dist.yml/badge.svg)](https://github.com/step-security/test-results-reporter-publish/actions/workflows/check-dist.yml)
 ![Coverage](./badges/coverage.svg)
 
-[![Stars](https://img.shields.io/github/stars/step-security/test-results-reporter-publish?style=social)](https://github.com/step-security/test-results-reporter-publish/stargazers)
-
 GitHub Action for
 [testbeats](https://github.com/test-results-reporter/testbeats) publish command.
-
-Read more about the project at https://testbeats.com
 
 </span>
 
@@ -57,7 +51,7 @@ steps:
 steps:
   - name: Checkout
     id: checkout
-    uses: actions/checkout@v4
+    uses: actions/checkout@v7
 
   - name: Install Dependencies
     id: npm-ci

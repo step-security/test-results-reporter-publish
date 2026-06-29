@@ -30,7 +30,6 @@
     "format:write": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint . -c ./eslint.config.mjs",
-    "local-action": "local-action . src/main.ts .env",
     "package": "ncc build src/index.ts -o dist --source-map --license licenses.txt",
     "package:watch": "npm run package -- --watch",
     "test": "jest",

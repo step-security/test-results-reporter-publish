@@ -1,7 +1,11 @@
 import * as core from '@actions/core'
-import { exec } from '@actions/exec'
 import fs from 'fs'
 import axios, { isAxiosError } from 'axios'
+import { publish } from 'testbeats'
+
+declare module 'testbeats' {
+  export function publish(opts: Record<string, unknown>): Promise<void>
+}
 
 async function validateSubscription(): Promise<void> {
   const eventPath = process.env.GITHUB_EVENT_PATH
@@ -55,19 +59,12 @@ async function validateSubscription(): Promise<void> {
 export async function run(): Promise<void> {
   try {
     await validateSubscription()
-    // Get config file input
+    const opts: Record<string, unknown> = {}
+
     const configFile = core.getInput('config')
+    if (configFile) opts['config'] = configFile
 
-    // Build command arguments array
-    const args: string[] = []
-
-    // Handle config file
-    if (configFile) {
-      args.push('--config', configFile)
-    }
-
-    // Define input keys
-    const inputs = [
+    const stringInputs = [
       'api-key',
       'project',
       'run',
@@ -84,25 +81,16 @@ export async function run(): Promise<void> {
       'mstest'
     ] as const
 
-    // Add other inputs if they exist
-    for (const input of inputs) {
+    for (const input of stringInputs) {
       const value = core.getInput(input)
-      if (value) {
-        args.push(`--${input}`, value)
-      }
+      if (value) opts[input] = value
     }
 
-    // Add boolean flags
-    if (core.getBooleanInput('ci-info')) args.push('--ci-info')
+    if (core.getBooleanInput('ci-info')) opts['ci-info'] = true
     if (core.getBooleanInput('chart-test-summary'))
-      args.push('--chart-test-summary')
+      opts['chart-test-summary'] = true
 
-    // Execute testbeats CLI command
-    const exitCode = await exec('npx', ['testbeats', 'publish', ...args])
-
-    if (exitCode !== 0) {
-      throw new Error(`testbeats CLI command failed with exit code ${exitCode}`)
-    }
+    await publish(opts)
 
     core.info('Successfully published test results')
   } catch (error) {

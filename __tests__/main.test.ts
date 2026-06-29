@@ -3,12 +3,12 @@
  */
 
 import * as core from '@actions/core'
-import { exec } from '@actions/exec'
+import { publish } from 'testbeats'
 import { run } from '../src/main'
 
 // Mock the dependencies
 jest.mock('@actions/core')
-jest.mock('@actions/exec')
+jest.mock('testbeats')
 jest.mock('fs/promises')
 
 // Mock inputs
@@ -41,8 +41,7 @@ describe('Github Action Run', () => {
     mockInputs = { ...defaultMockInputs }
   })
 
-  it('should execute testbeats CLI command for slack/Junit - only CLI params', async () => {
-    // Update only the required values for this test
+  it('should execute testbeats publish for slack/Junit - only CLI params', async () => {
     mockInputs['slack'] = 'slack_webhook_url'
     mockInputs['junit'] = 'junit_file_path'
     mockInputs['ci-info'] = 'true'
@@ -53,29 +52,21 @@ describe('Github Action Run', () => {
     jest
       .mocked(core.getBooleanInput)
       .mockImplementation((name: string) => mockInputs[name] === 'true')
-    jest.mocked(exec).mockResolvedValue(0)
+    jest.mocked(publish).mockResolvedValue(undefined)
 
     await run()
 
-    // Verify exec was called with correct arguments
-    expect(exec).toHaveBeenCalledWith('npx', [
-      'testbeats',
-      'publish',
-      '--slack',
-      'slack_webhook_url',
-      '--junit',
-      'junit_file_path',
-      '--ci-info'
-    ])
-
-    // Verify success message
+    expect(publish).toHaveBeenCalledWith({
+      slack: 'slack_webhook_url',
+      junit: 'junit_file_path',
+      'ci-info': true
+    })
     expect(core.info).toHaveBeenCalledWith(
       'Successfully published test results'
     )
   })
 
-  it('should execute testbeats CLI command for slack/testng - only CLI params', async () => {
-    // Update only the required values for this test
+  it('should execute testbeats publish for slack/testng - only CLI params', async () => {
     mockInputs['slack'] = 'slack_webhook_url'
     mockInputs['testng'] = 'testng_file_path'
     mockInputs['chart-test-summary'] = 'true'
@@ -86,29 +77,21 @@ describe('Github Action Run', () => {
     jest
       .mocked(core.getBooleanInput)
       .mockImplementation((name: string) => mockInputs[name] === 'true')
-    jest.mocked(exec).mockResolvedValue(0)
+    jest.mocked(publish).mockResolvedValue(undefined)
 
     await run()
 
-    // Verify exec was called with correct arguments
-    expect(exec).toHaveBeenCalledWith('npx', [
-      'testbeats',
-      'publish',
-      '--slack',
-      'slack_webhook_url',
-      '--testng',
-      'testng_file_path',
-      '--chart-test-summary'
-    ])
-
-    // Verify success message
+    expect(publish).toHaveBeenCalledWith({
+      slack: 'slack_webhook_url',
+      testng: 'testng_file_path',
+      'chart-test-summary': true
+    })
     expect(core.info).toHaveBeenCalledWith(
       'Successfully published test results'
     )
   })
 
-  it('should execute testbeats CLI command for teams/cucumber - only CLI params', async () => {
-    // Update only the required values for this test
+  it('should execute testbeats publish for teams/cucumber - only CLI params', async () => {
     mockInputs['teams'] = 'teams_webhook_url'
     mockInputs['cucumber'] = 'cucumber_file_path'
     mockInputs['chart-test-summary'] = 'true'
@@ -119,29 +102,21 @@ describe('Github Action Run', () => {
     jest
       .mocked(core.getBooleanInput)
       .mockImplementation((name: string) => mockInputs[name] === 'true')
-    jest.mocked(exec).mockResolvedValue(0)
+    jest.mocked(publish).mockResolvedValue(undefined)
 
     await run()
 
-    // Verify exec was called with correct arguments
-    expect(exec).toHaveBeenCalledWith('npx', [
-      'testbeats',
-      'publish',
-      '--teams',
-      'teams_webhook_url',
-      '--cucumber',
-      'cucumber_file_path',
-      '--chart-test-summary'
-    ])
-
-    // Verify success message
+    expect(publish).toHaveBeenCalledWith({
+      teams: 'teams_webhook_url',
+      cucumber: 'cucumber_file_path',
+      'chart-test-summary': true
+    })
     expect(core.info).toHaveBeenCalledWith(
       'Successfully published test results'
     )
   })
 
-  it('should execute testbeats CLI command for chat/mocha - only CLI params', async () => {
-    // Update only the required values for this test
+  it('should execute testbeats publish for chat/mocha - only CLI params', async () => {
     mockInputs['chat'] = 'chat_webhook_url'
     mockInputs['mocha'] = 'mocha_file_path'
     mockInputs['chart-test-summary'] = 'true'
@@ -152,29 +127,21 @@ describe('Github Action Run', () => {
     jest
       .mocked(core.getBooleanInput)
       .mockImplementation((name: string) => mockInputs[name] === 'true')
-    jest.mocked(exec).mockResolvedValue(0)
+    jest.mocked(publish).mockResolvedValue(undefined)
 
     await run()
 
-    // Verify exec was called with correct arguments
-    expect(exec).toHaveBeenCalledWith('npx', [
-      'testbeats',
-      'publish',
-      '--chat',
-      'chat_webhook_url',
-      '--mocha',
-      'mocha_file_path',
-      '--chart-test-summary'
-    ])
-
-    // Verify success message
+    expect(publish).toHaveBeenCalledWith({
+      chat: 'chat_webhook_url',
+      mocha: 'mocha_file_path',
+      'chart-test-summary': true
+    })
     expect(core.info).toHaveBeenCalledWith(
       'Successfully published test results'
     )
   })
 
-  it('should execute testbeats CLI command for slack/mocha - with api key, project, and run', async () => {
-    // Update only the required values for this test
+  it('should execute testbeats publish for slack/mocha - with api key, project, and run', async () => {
     mockInputs['slack'] = 'slack_webhook_url'
     mockInputs['mocha'] = 'mocha_file_path'
     mockInputs['api-key'] = 'api_key'
@@ -187,34 +154,23 @@ describe('Github Action Run', () => {
     jest
       .mocked(core.getBooleanInput)
       .mockImplementation((name: string) => mockInputs[name] === 'true')
-    jest.mocked(exec).mockResolvedValue(0)
+    jest.mocked(publish).mockResolvedValue(undefined)
 
     await run()
 
-    // Verify exec was called with correct arguments
-    expect(exec).toHaveBeenCalledWith('npx', [
-      'testbeats',
-      'publish',
-      '--api-key',
-      'api_key',
-      '--project',
-      'project',
-      '--run',
-      'build_number',
-      '--slack',
-      'slack_webhook_url',
-      '--mocha',
-      'mocha_file_path'
-    ])
-
-    // Verify success message
+    expect(publish).toHaveBeenCalledWith({
+      'api-key': 'api_key',
+      project: 'project',
+      run: 'build_number',
+      slack: 'slack_webhook_url',
+      mocha: 'mocha_file_path'
+    })
     expect(core.info).toHaveBeenCalledWith(
       'Successfully published test results'
     )
   })
 
-  it('should execute testbeats CLI command for Junit - only config file', async () => {
-    // Update only the required values for this test
+  it('should execute testbeats publish for Junit - only config file', async () => {
     mockInputs['config'] = 'config.json'
 
     jest
@@ -223,71 +179,53 @@ describe('Github Action Run', () => {
     jest
       .mocked(core.getBooleanInput)
       .mockImplementation((name: string) => mockInputs[name] === 'true')
-    jest.mocked(exec).mockResolvedValue(0)
+    jest.mocked(publish).mockResolvedValue(undefined)
 
     await run()
 
-    // Verify exec was called with correct arguments
-    expect(exec).toHaveBeenCalledWith('npx', [
-      'testbeats',
-      'publish',
-      '--config',
-      'config.json'
-    ])
-
-    // Verify success message
+    expect(publish).toHaveBeenCalledWith({ config: 'config.json' })
     expect(core.info).toHaveBeenCalledWith(
       'Successfully published test results'
     )
   })
 
-  it('should handle CLI command failure', async () => {
-    // Mock exec to return non-zero exit code
-    jest.mocked(exec).mockResolvedValue(1)
+  it('should handle publish failure', async () => {
     jest.mocked(core.getInput).mockReturnValue('')
     jest.mocked(core.getBooleanInput).mockReturnValue(false)
+    jest.mocked(publish).mockRejectedValue(new Error('publish failed'))
 
     await run()
 
-    // Verify error handling
-    expect(core.setFailed).toHaveBeenCalledWith(
-      'testbeats CLI command failed with exit code 1'
-    )
+    expect(core.setFailed).toHaveBeenCalledWith('publish failed')
   })
 
   it('should handle unexpected errors', async () => {
-    // Mock exec to throw an error
-    jest.mocked(exec).mockRejectedValue(new Error('Network error'))
     jest.mocked(core.getInput).mockReturnValue('')
     jest.mocked(core.getBooleanInput).mockReturnValue(false)
+    jest.mocked(publish).mockRejectedValue(new Error('Network error'))
 
     await run()
 
-    // Verify error handling
     expect(core.setFailed).toHaveBeenCalledWith('Network error')
   })
 
   it('should handle non-Error objects in catch block', async () => {
-    // Mock exec to throw a non-Error object
-    jest.mocked(exec).mockRejectedValue('String error')
     jest.mocked(core.getInput).mockReturnValue('')
     jest.mocked(core.getBooleanInput).mockReturnValue(false)
+    jest.mocked(publish).mockRejectedValue('String error')
 
     await run()
 
-    // Verify error handling
     expect(core.setFailed).toHaveBeenCalledWith('An unexpected error occurred')
   })
 
-  it('should not include empty inputs in arguments', async () => {
-    // Mock all inputs as empty
+  it('should not include empty inputs in opts', async () => {
     jest.mocked(core.getInput).mockReturnValue('')
     jest.mocked(core.getBooleanInput).mockReturnValue(false)
-    jest.mocked(exec).mockResolvedValue(0)
+    jest.mocked(publish).mockResolvedValue(undefined)
 
     await run()
 
-    // Verify exec was called with minimal arguments
-    expect(exec).toHaveBeenCalledWith('npx', ['testbeats', 'publish'])
+    expect(publish).toHaveBeenCalledWith({})
   })
 })

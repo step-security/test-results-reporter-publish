@@ -1,0 +1,7 @@
+[[IgnoredVulns]]
+id = "GHSA-gh4j-gqv2-49f6"
+reason = "fast-xml-parser: XMLBuilder injection requires building XML from user input; testbeats only uses it to parse test result files, never to build XML"
+
+[[IgnoredVulns]]
+id = "GHSA-h67p-54hq-rp68"
+reason = "js-yaml: dev-only dependency not included in the production bundle; quadratic DoS requires parsing attacker-controlled YAML which never occurs here"
